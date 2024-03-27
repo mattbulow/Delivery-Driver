@@ -20,10 +20,11 @@ public class Car : MonoBehaviour
 
     [SerializeField] private Text infoText;
     [SerializeField] private Text timeText;
+    [SerializeField] private Image carUiImage;
 
     private float gameTime;
-    private bool gameComplete = false;
-    private bool gameStarted = false;
+    [SerializeField] private bool gameComplete = false;
+    [SerializeField] private bool gameStarted = false;
 
     private float _verticalAxis = 0;
     private float _horizontalAxis = 0;
@@ -42,6 +43,8 @@ public class Car : MonoBehaviour
 
         infoText.text = "Collect Square Packages and deliver to same color Hexagon Customers\n" +
             "'Tab' to change cars. 'wasd' to move/ turn. 'Spacebar' to reload game";
+
+        carUiImage.enabled = false;
     }
 
     // Update is called once per frame
@@ -67,7 +70,7 @@ public class Car : MonoBehaviour
             gameStarted = true;
         }
 
-        if (gameStarted)
+        if (gameStarted && !gameComplete)
         { 
             gameTime += Time.deltaTime;
             timeText.text = "Time:\n" + gameTime.ToString("0.00") + " s";
@@ -96,7 +99,9 @@ public class Car : MonoBehaviour
                     infoText.text = "Picked up package (square), now deliver it to the same color customer (hexagon).";
                     _hasPackage = true;
                     packageColor = collision.GetComponent<SpriteRenderer>().color;
-                    _spriteRenderer.color = collision.GetComponent<SpriteRenderer>().color;
+                    carUiImage.color = packageColor;
+                    carUiImage.enabled = true;
+                    //_spriteRenderer.color = collision.GetComponent<SpriteRenderer>().color;
                     Destroy(collision.gameObject, _packageDestroyDelay);      
                 }
                 break;
@@ -115,7 +120,8 @@ public class Car : MonoBehaviour
                             _speed = 0;
                             gameComplete = true;
                         }
-                        _spriteRenderer.color = Color.white;
+                        //_spriteRenderer.color = Color.white;
+                        carUiImage.enabled = false;
                         Destroy(collision.gameObject, _packageDestroyDelay);
                     } else
                     {
